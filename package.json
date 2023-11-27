@@ -1,0 +1,37 @@
+{
+  "name": "app-backend",
+  "version": "1.0.0",
+  "description": "This is dietafify backend",
+  "main": "src/index.ts",
+  "repository": "git@github.com:Dietarify/app-backend.git",
+  "author": "bayusamudra5502 <bayusamudra.55.02.com@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "pretty": "prettier --write './src/*.ts'",
+    "build": "tsc",
+    "dev": "nodemon -r dotenv/config",
+    "start": "node build/index.js",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.6.0",
+    "@types/validator": "^13.11.7",
+    "axios": "^1.6.2",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.11.1",
+    "validator": "^13.11.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "dotenv": "^16.3.1",
+    "husky": "^8.0.3",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.1.0",
+    "prisma": "^5.6.0",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.2"
+  }
+}
