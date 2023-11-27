@@ -2,8 +2,12 @@ import express from 'express';
 import asyncHander from 'express-async-handler';
 import logger from '@service/log';
 import ResponseError from '@util/ResponseError';
+import { getUserDetails } from '@controller/UserTest';
+import { UserMiddleware } from './middleware/UserMiddleware';
 
 const router = express.Router();
+
+router.use(asyncHander(UserMiddleware));
 
 router.get(
   '/',
@@ -26,6 +30,8 @@ router.get(
     });
   })
 );
+
+router.get('/users', asyncHander(getUserDetails));
 
 // Error Handler
 router.use(
