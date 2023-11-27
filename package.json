@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "pretty": "prettier --write './src/*.ts'",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "dev": "nodemon -r dotenv/config",
     "start": "node build/index.js",
     "prepare": "husky install"
@@ -32,6 +32,7 @@
     "prettier": "^3.1.0",
     "prisma": "^5.6.0",
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.2"
   }
