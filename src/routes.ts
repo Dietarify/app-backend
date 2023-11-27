@@ -10,7 +10,18 @@ router.get(
   asyncHander(async (_, res) => {
     res.json({
       status: 'success',
-      message: 'ok',
+      message: 'server is running',
+      data: null,
+    });
+  })
+);
+
+router.get(
+  '/healthz',
+  asyncHander(async (_, res) => {
+    res.json({
+      status: 'success',
+      message: 'server is running',
       data: null,
     });
   })
