@@ -102,12 +102,11 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
-      "@controllers/*": ["controllers/*"],
-      "@middlewares/*": ["middlewares/*"],
-      "@models/*": ["models/*"],
-      "@routes/*": ["routes/*"],
-      "@utils/*": ["utils/*"],
-      "@services/*": ["services/*"]
+      "@controller/*": ["controller/*"],
+      "@middleware/*": ["middleware/*"],
+      "@model/*": ["model/*"],
+      "@util/*": ["util/*"],
+      "@service/*": ["service/*"]
     }
   },
   "ts-node": {
