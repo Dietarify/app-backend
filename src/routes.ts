@@ -4,6 +4,7 @@ import logger from '@service/log';
 import ResponseError from '@util/ResponseError';
 import { getUserDetails } from '@controller/UserTest';
 import { UserMiddleware } from './middleware/UserMiddleware';
+import { healthCheck } from './service/MLService';
 
 const router = express.Router();
 
@@ -23,10 +24,15 @@ router.get(
 router.get(
   '/healthz',
   asyncHander(async (_, res) => {
+    const result = await healthCheck();
+
     res.json({
       status: 'success',
       message: 'server is running',
-      data: null,
+      data: {
+        'ml-service': result,
+        api: true,
+      },
     });
   })
 );
