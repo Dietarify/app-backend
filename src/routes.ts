@@ -22,7 +22,7 @@ router.get(
 );
 
 router.get(
-  '/healthz',
+  '/healthcheck',
   asyncHander(async (_, res) => {
     const result = await healthCheck();
 
@@ -30,7 +30,7 @@ router.get(
       status: 'success',
       message: 'server is running',
       data: {
-        'ml-service': result,
+        ml: result,
         api: true,
       },
     });
