@@ -1,8 +1,12 @@
 import axios from 'axios';
+import logger from './log';
 
-const ML_API_URL = process.env.ML_API_URL;
+const ML_API_URL = process.env.ML_API_URL ?? 'localhost:8000';
 
 export async function healthCheck() {
-  await axios.get(`${ML_API_URL}/`);
+  const url = ML_API_URL;
+  logger.info(`checking ml api health: ${url}`);
+
+  await axios.get(url);
   return true;
 }
