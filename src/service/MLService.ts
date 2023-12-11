@@ -1,5 +1,5 @@
 import axios from 'axios';
-import logger from './log';
+import logger from '@service/log';
 import { GoogleAuth } from 'google-auth-library';
 
 const ML_API_URL = process.env.ML_API_URL ?? 'localhost:8000';
@@ -23,9 +23,14 @@ mlService.interceptors.request.use(
 );
 
 export async function healthCheck() {
-  const url = ML_API_URL;
-  logger.info(`checking ml api health: ${url}`);
+  try {
+    const url = ML_API_URL;
+    logger.info(`checking ml api health: ${url}`);
 
-  await mlService.get(url);
-  return true;
+    await mlService.get(url);
+    return true;
+  } catch (err) {
+    logger.error(`failed to get healthcheck response: ${err}`);
+    return false;
+  }
 }

@@ -106,7 +106,8 @@
       "@middleware/*": ["middleware/*"],
       "@model/*": ["model/*"],
       "@util/*": ["util/*"],
-      "@service/*": ["service/*"]
+      "@service/*": ["service/*"],
+      "@routes/*": ["routes/*"]
     }
   },
   "ts-node": {

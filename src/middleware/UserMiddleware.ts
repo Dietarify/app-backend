@@ -1,4 +1,4 @@
-import logger from '@/service/log';
+import logger from '@service/log';
 import express from 'express';
 import { getAuth } from 'firebase-admin/auth';
 import { FirebaseError } from 'firebase-admin';

@@ -3,41 +3,15 @@ import asyncHander from 'express-async-handler';
 import logger from '@service/log';
 import ResponseError from '@util/ResponseError';
 import { getUserDetails } from '@controller/UserTest';
-import { UserMiddleware } from './middleware/UserMiddleware';
-import { healthCheck } from './service/MLService';
+import { UserMiddleware } from '@middleware/UserMiddleware';
+import rootRouter from './root';
+import userRouter from './users';
 
 const router = express.Router();
 
 router.use(asyncHander(UserMiddleware));
-
-router.get(
-  '/',
-  asyncHander(async (_, res) => {
-    res.json({
-      status: 'success',
-      message: 'server is running',
-      data: null,
-    });
-  })
-);
-
-router.get(
-  '/healthcheck',
-  asyncHander(async (_, res) => {
-    const result = await healthCheck();
-
-    res.json({
-      status: 'success',
-      message: 'server is running',
-      data: {
-        ml: result,
-        api: true,
-      },
-    });
-  })
-);
-
-router.get('/users', asyncHander(getUserDetails));
+router.use(rootRouter);
+router.use('/users', userRouter);
 
 // Error Handler
 router.use(

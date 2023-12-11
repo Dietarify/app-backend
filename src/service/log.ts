@@ -30,10 +30,13 @@ const logger = winston.createLogger({
       return log;
     }),
   }),
-  format: winston.format.combine(
-    winston.format.simple(),
-    winston.format.colorize()
-  ),
+  format:
+    process.env.NODE_ENV?.toLowerCase() == 'production'
+      ? winston.format.simple()
+      : winston.format.combine(
+          winston.format.simple(),
+          winston.format.colorize()
+        ),
   level: process.env.LOG_LEVEL ?? 'info',
 });
 
