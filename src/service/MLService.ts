@@ -13,8 +13,7 @@ mlService.interceptors.request.use(
     const client = await auth.getIdTokenClient(ML_API_URL);
     const token = await client.idTokenProvider.fetchIdToken(ML_API_URL);
 
-    config.headers.Authorization = token;
-    logger.debug(`token: ${token.slice(0, 5)}...`);
+    config.headers.Authorization = `Bearer ${token}`;
 
     return config;
   },
