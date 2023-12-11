@@ -34,6 +34,7 @@ const logger = winston.createLogger({
     winston.format.simple(),
     winston.format.colorize()
   ),
+  level: process.env.LOG_LEVEL ?? 'info',
 });
 
 export default logger;
