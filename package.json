@@ -12,10 +12,11 @@
     "dev": "nodemon -r dotenv/config",
     "start": "node build/index.js",
     "prepare": "husky install",
-    "firebase:emulator": "firebase emulators:start --project dietarify"
+    "firebase:emulator": "firebase emulators:start"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.6.0",
+    "@prisma/client": "5.6.0",
     "@types/validator": "^13.11.7",
     "axios": "^1.6.2",
     "express": "^4.18.2",
