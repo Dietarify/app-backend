@@ -12,7 +12,8 @@
     "dev": "nodemon -r dotenv/config",
     "start": "node build/index.js",
     "prepare": "husky install",
-    "firebase:emulator": "firebase emulators:start"
+    "firebase:emulator": "firebase emulators:start",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.6.0",

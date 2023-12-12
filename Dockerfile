@@ -27,6 +27,9 @@ RUN yarn install --production
 RUN sed -i s@build/index.js@index.js@g package.json
 
 COPY --from=build /app/build .
+COPY --from=build /app/prisma ./prisma
+
+RUN yarn db:generate
 
 STOPSIGNAL SIGQUIT
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "curl", "http://localhost:8080" ]
