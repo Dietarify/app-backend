@@ -2,16 +2,16 @@ import express from 'express';
 import asyncHander from 'express-async-handler';
 import logger from '@service/log';
 import ResponseError from '@util/ResponseError';
-import { getUserDetails } from '@controller/UserTest';
 import { UserMiddleware } from '@middleware/UserMiddleware';
 import rootRouter from './root';
 import userRouter from './users';
+import { ValidationError } from 'yup';
 
 const router = express.Router();
 
 router.use(asyncHander(UserMiddleware));
 router.use(rootRouter);
-router.use('/users', userRouter);
+router.use('/profile', userRouter);
 
 // Error Handler
 router.use(
@@ -26,6 +26,17 @@ router.use(
       const [status, data] = err.getResponse();
 
       res.status(status).json(data);
+      return;
+    }
+
+    if (err instanceof ValidationError) {
+      logger.warn(err.message);
+
+      res.status(400).json({
+        status: 'failed',
+        message: 'invalid payload',
+        data: err.errors,
+      });
       return;
     }
 

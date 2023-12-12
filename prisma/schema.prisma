@@ -30,8 +30,9 @@ model DietHistory {
 
 model Profile {
   userId              String    @db.VarChar(30) @id
-  height              Int
-  weight              Int 
+  height              Float
+  currentWeight       Float
+  weightTarget        Float 
   dietHistory         DietHistory[]
   weightHistory       WeightHistory[]
 }
@@ -40,6 +41,6 @@ model WeightHistory {
   id            Int       @id @default(autoincrement())
   timestamp     DateTime  @default(now())
   userId        String    @db.VarChar(30)
-  currentWeight Int
+  currentWeight Float
   profile       Profile   @relation(references: [userId], fields: [userId])
 }
