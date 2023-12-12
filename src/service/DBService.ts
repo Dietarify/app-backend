@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import logger from './log';
+import { PrismaClientInitializationError } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +10,15 @@ export async function healthCheck() {
     await prisma.$queryRaw`SELECT 1=1;`;
     return true;
   } catch (e) {
-    logger.error(`database healthcheck failed: ${e}`);
+    if (e instanceof PrismaClientInitializationError) {
+      logger.error(
+        `database healthcheck failed: ${e.errorCode} - ${e.name} - ${e.message}`
+      );
+    } else {
+      logger.error(`database healthcheck failed: ${e}`);
+    }
     return false;
   }
 }
+
+export default prisma;
