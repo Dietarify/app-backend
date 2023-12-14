@@ -15,6 +15,7 @@ datasource db {
 model Foods {
   id                        Int       @id @default(autoincrement())
   name                      String    @db.VarChar(200)
+  category                  String    @db.VarChar(100)
   caloriesPerHundredGram    Float
   energyPerHundredGram      Float
   dietHistory               DietHistory[]

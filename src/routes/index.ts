@@ -51,7 +51,7 @@ router.use(
 
 // Not Found handler
 router.use((_, res) => {
-  res.json({
+  res.status(404).json({
     status: 'failed',
     message: 'not found',
     data: null,
