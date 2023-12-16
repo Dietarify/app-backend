@@ -1,19 +1,26 @@
 import axios from 'axios';
 import logger from '@service/log';
 import { GoogleAuth } from 'google-auth-library';
+import prisma from './DBService';
 
-const ML_API_URL = process.env.ML_API_URL ?? 'localhost:8000';
+const ML_API_URL = process.env.ML_API_URL ?? 'http://localhost:8000';
 const auth = new GoogleAuth();
 
-const mlService = axios.create();
+const mlService = axios.create({
+  baseURL: ML_API_URL,
+});
 
 mlService.interceptors.request.use(
   async (config) => {
-    logger.debug('setup request token');
-    const client = await auth.getIdTokenClient(ML_API_URL);
-    const token = await client.idTokenProvider.fetchIdToken(ML_API_URL);
+    try {
+      logger.debug('setup request token');
+      const client = await auth.getIdTokenClient(ML_API_URL);
+      const token = await client.idTokenProvider.fetchIdToken(ML_API_URL);
 
-    config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
+    } catch (err) {
+      logger.error(`request token failed: ${err}`);
+    }
 
     return config;
   },
@@ -24,13 +31,35 @@ mlService.interceptors.request.use(
 
 export async function healthCheck() {
   try {
-    const url = ML_API_URL;
-    logger.info(`checking ml api health: ${url}`);
+    logger.info(`checking ml api health: ${ML_API_URL}`);
 
-    await mlService.get(url);
+    await mlService.get('/');
     return true;
   } catch (err) {
     logger.error(`failed to get healthcheck response: ${err}`);
     return false;
   }
+}
+
+export async function getFoodRecomendation(userid: string) {
+  const result = await mlService.post('/models/food-recomendation');
+  const recomendationId = result.data.data;
+
+  const foodResult = await prisma.foods.findMany({
+    where: {
+      id: {
+        in: recomendationId,
+      },
+    },
+  });
+
+  const breakfast = foodResult.filter((el) => el.id == recomendationId[0])[0];
+  const lunch = foodResult.filter((el) => el.id == recomendationId[1])[0];
+  const dinner = foodResult.filter((el) => el.id == recomendationId[2])[0];
+
+  return {
+    breakfast,
+    lunch,
+    dinner,
+  };
 }

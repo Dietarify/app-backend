@@ -12,6 +12,11 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+enum Gender {
+  Male
+  Female
+}
+
 model Foods {
   id                        Int       @id @default(autoincrement())
   name                      String    @db.VarChar(200)
@@ -22,8 +27,7 @@ model Foods {
 }
 
 model DietHistory {
-  id          Int       @id @default(autoincrement())
-  timestamp   DateTime  @default(now())
+  timestamp   DateTime  @default(now()) @id
   userId      String    @db.VarChar(30)
   eatenFoodId Int
   eatenFood   Foods     @relation(references: [id], fields: [eatenFoodId])
@@ -32,17 +36,33 @@ model DietHistory {
 
 model Profile {
   userId              String    @db.VarChar(30) @id
-  height              Float
-  currentWeight       Float
-  weightTarget        Float 
+  height              Float?
+  startWeight         Float?
+  currentWeight       Float?
+  weightTarget        Float?
+  gender              Gender?
+  birthDate           DateTime? @db.Date
+  nickname            String?
+  dateTarget          DateTime? @db.Date   
+
   dietHistory         DietHistory[]
   weightHistory       WeightHistory[]
+  caloriesHistory     CalorieHistory[]
 }
 
 model WeightHistory {
-  id            Int       @id @default(autoincrement())
-  timestamp     DateTime  @default(now())
+  timestamp     DateTime  @default(now())  @db.Date
   userId        String    @db.VarChar(30)
   currentWeight Float
   profile       Profile   @relation(references: [userId], fields: [userId])
+  @@id([timestamp, userId])
+}
+
+model CalorieHistory {
+  timestamp         DateTime  @default(now())  @db.Date
+  userId            String    @db.VarChar(30)
+  consumedCalories  Float
+  caloriesNeeds     Float
+  profile           Profile   @relation(references: [userId], fields: [userId])
+  @@id([timestamp, userId])
 }

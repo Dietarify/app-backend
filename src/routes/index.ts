@@ -6,12 +6,14 @@ import { UserMiddleware } from '@middleware/UserMiddleware';
 import rootRouter from './root';
 import userRouter from './users';
 import { ValidationError } from 'yup';
+import dietRouter from './Food';
 
 const router = express.Router();
 
 router.use(asyncHander(UserMiddleware));
 router.use(rootRouter);
 router.use('/profile', userRouter);
+router.use('/foods', dietRouter);
 
 // Error Handler
 router.use(

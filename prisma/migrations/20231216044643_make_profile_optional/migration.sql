@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Profile" ADD COLUMN     "startWeight" DOUBLE PRECISION,
+ALTER COLUMN "height" DROP NOT NULL,
+ALTER COLUMN "currentWeight" DROP NOT NULL,
+ALTER COLUMN "weightTarget" DROP NOT NULL;

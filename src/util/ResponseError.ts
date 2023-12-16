@@ -2,10 +2,10 @@ export default class ResponseError extends Error {
   private status: number;
   private responseMessage: string;
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, responseMessage?: string) {
     super(message);
     this.status = status;
-    this.responseMessage = 'internal server error';
+    this.responseMessage = responseMessage ?? message;
   }
 
   setResponseMessage(message: string) {
