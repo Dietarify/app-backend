@@ -9,6 +9,7 @@ RUN yarn install
 
 COPY . /app
 
+RUN npx prisma generate
 RUN yarn build
 
 FROM node:20-alpine
