@@ -1,9 +1,5 @@
-import { InferType, number, object, string } from 'yup';
+import { InferType, object } from 'yup';
+import { Pagination, Search } from './generic';
 
-export const GetFoodQuerySchema = object({
-  query: string().optional(),
-  limit: number().default(10),
-  page: number().default(1),
-});
-
+export const GetFoodQuerySchema = Pagination.concat(Search);
 export type GetFoodQuery = InferType<typeof GetFoodQuerySchema>;

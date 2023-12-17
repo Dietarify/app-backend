@@ -63,3 +63,29 @@ export async function getFoodRecomendation(userid: string) {
     dinner,
   };
 }
+
+// TODO: use the correct calculation
+export async function calculateCaloriesNeeds(
+  weight: number,
+  height: number
+): Promise<number> {
+  const result = await mlService.post('/calculate/calories-needs', {
+    weight,
+    height,
+  });
+
+  return result.data.data;
+}
+
+// TODO: use the correct BMI calculation
+export async function calculateBMI(
+  weight: number,
+  height: number
+): Promise<number> {
+  const result = await mlService.post('/calculate/bmi', {
+    weight,
+    height,
+  });
+
+  return result.data.data;
+}

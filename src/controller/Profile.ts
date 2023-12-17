@@ -1,5 +1,6 @@
 import { UpdateProfileRequestSchema } from '@/model/request/ProfileRequest';
 import { ProfileResponse } from '@/model/response/ProfileRespose';
+import { calculateBMI, calculateCaloriesNeeds } from '@/service/MLService';
 import { dateToString } from '@/util/Date';
 import ResponseError from '@/util/ResponseError';
 import prisma from '@service/DBService';
@@ -61,7 +62,7 @@ export async function getProfile(req: express.Request, res: express.Response) {
     throw new ResponseError(401, 'authentication required');
   }
 
-  const { ...result } = await prisma.profile.findFirst({
+  const { ...result } = await prisma.profile.findUnique({
     where: {
       userId: req.user.uid,
     },
@@ -87,5 +88,71 @@ export async function getProfile(req: express.Request, res: express.Response) {
       name: req.user.name,
       picture: req.user.picture,
     } as ProfileResponse,
+  });
+}
+
+export async function getUserCalNeeds(
+  req: express.Request,
+  res: express.Response
+) {
+  if (!req.user) {
+    throw new ResponseError(401, 'authentication required');
+  }
+
+  const profile = await prisma.profile.findUnique({
+    where: {
+      userId: req.user.uid,
+    },
+    select: {
+      currentWeight: true,
+      height: true,
+    },
+  });
+
+  if (!profile || !profile.currentWeight || !profile.height) {
+    throw new ResponseError(404, "user hasn't been initialized");
+  }
+
+  const calNeeds = await calculateCaloriesNeeds(
+    profile.currentWeight,
+    profile.height
+  );
+
+  res.json({
+    status: 'success',
+    message: 'user data has been fetched',
+    data: {
+      calories: calNeeds,
+    },
+  });
+}
+
+export async function getUserBMI(req: express.Request, res: express.Response) {
+  if (!req.user) {
+    throw new ResponseError(401, 'authentication required');
+  }
+
+  const profile = await prisma.profile.findUnique({
+    where: {
+      userId: req.user.uid,
+    },
+    select: {
+      currentWeight: true,
+      height: true,
+    },
+  });
+
+  if (!profile || !profile.currentWeight || !profile.height) {
+    throw new ResponseError(404, "user hasn't been initialized");
+  }
+
+  const bmiResult = await calculateBMI(profile.currentWeight, profile.height);
+
+  res.json({
+    status: 'success',
+    message: 'user data has been fetched',
+    data: {
+      bmi: bmiResult,
+    },
   });
 }

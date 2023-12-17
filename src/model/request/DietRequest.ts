@@ -1,9 +1,8 @@
-import { InferType, number, object, string } from 'yup';
+import { InferType, date, number, object } from 'yup';
 
-export const GetFoodQuerySchema = object({
-  query: string().optional(),
-  limit: number().default(10),
-  page: number().default(1),
+export const AddDietSchema = object({
+  foodId: number().required(),
+  foodItemWeight: number().required(),
 });
 
-export type GetFoodQuery = InferType<typeof GetFoodQuerySchema>;
+export type AddDiet = InferType<typeof AddDietSchema>;

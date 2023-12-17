@@ -30,6 +30,7 @@ model DietHistory {
   timestamp   DateTime  @default(now()) @id
   userId      String    @db.VarChar(30)
   eatenFoodId Int
+  quantity    Float     @default(0)
   eatenFood   Foods     @relation(references: [id], fields: [eatenFoodId])
   profile     Profile   @relation(references: [userId], fields: [userId])
 }
