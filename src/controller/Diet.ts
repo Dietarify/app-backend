@@ -13,7 +13,7 @@ export async function getDietHistory(
     throw new ResponseError(401, 'authentication required');
   }
 
-  const { limit, page } = await Pagination.validate(req.body);
+  const { limit, page } = await Pagination.validate(req.query);
   const result = await prisma.dietHistory.findMany({
     where: {
       userId: req.user.uid,

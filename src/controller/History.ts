@@ -11,7 +11,7 @@ export async function getWeightHistory(
     throw new ResponseError(401, 'authentication required');
   }
 
-  const { limit, page } = await Pagination.validate(req.body);
+  const { limit, page } = await Pagination.validate(req.query);
   const result = await prisma.weightHistory.findMany({
     where: {
       userId: req.user.uid,
@@ -35,7 +35,7 @@ export async function getCaloriesHistory(
     throw new ResponseError(401, 'authentication required');
   }
 
-  const { limit, page } = await Pagination.validate(req.body);
+  const { limit, page } = await Pagination.validate(req.query);
   const result = await prisma.calorieHistory.findMany({
     where: {
       userId: req.user.uid,
