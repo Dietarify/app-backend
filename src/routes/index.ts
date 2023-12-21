@@ -8,6 +8,7 @@ import userRouter from './users';
 import { ValidationError } from 'yup';
 import foodRouter from './Food';
 import dietRouter from './Diet';
+import historyRouter from './History';
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ router.use(rootRouter);
 router.use('/profile', userRouter);
 router.use('/foods', foodRouter);
 router.use('/diet', dietRouter);
+router.use('/history', historyRouter);
 
 // Error Handler
 router.use(
