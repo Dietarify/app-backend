@@ -2,6 +2,7 @@ import axios from 'axios';
 import logger from '@service/log';
 import { GoogleAuth } from 'google-auth-library';
 import prisma from './DBService';
+import { Gender } from '@prisma/client';
 
 const ML_API_URL = process.env.ML_API_URL ?? 'http://localhost:8000';
 const auth = new GoogleAuth();
@@ -66,26 +67,23 @@ export async function getFoodRecomendation(userid: string) {
 
 // TODO: use the correct calculation
 export async function calculateCaloriesNeeds(
+  height: number,
   weight: number,
-  height: number
+  gender: Gender
 ): Promise<number> {
-  const result = await mlService.post('/calculate/calories-needs', {
-    weight,
-    height,
-  });
+  if (gender == Gender.Female) {
+    return 2100;
+  }
 
-  return result.data.data;
+  return 2500;
 }
 
-// TODO: use the correct BMI calculation
 export async function calculateBMI(
   weight: number,
   height: number
 ): Promise<number> {
-  const result = await mlService.post('/calculate/bmi', {
-    weight,
-    height,
-  });
+  const mHeight = height / 100;
+  const result = weight / (mHeight * mHeight);
 
-  return result.data.data;
+  return result;
 }

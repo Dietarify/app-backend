@@ -45,11 +45,16 @@ export async function addDiet(req: express.Request, res: express.Response) {
       },
     });
 
-    if (!userProfile || !userProfile.height || !userProfile.currentWeight) {
+    if (
+      !userProfile ||
+      !userProfile.height ||
+      !userProfile.currentWeight ||
+      !userProfile.gender
+    ) {
       throw new ResponseError(404, "user hasn't initialized yet");
     }
 
-    const { height, currentWeight } = userProfile;
+    const { height, currentWeight, gender } = userProfile;
 
     const foodData = await tx.foods.findUnique({
       where: {
@@ -61,7 +66,11 @@ export async function addDiet(req: express.Request, res: express.Response) {
       throw new ResponseError(404, 'food is not found');
     }
 
-    const caloriesNeeds = await calculateCaloriesNeeds(currentWeight, height);
+    const caloriesNeeds = await calculateCaloriesNeeds(
+      height,
+      currentWeight,
+      gender
+    );
     const timestamp = new Date();
 
     const userLastCalories =
