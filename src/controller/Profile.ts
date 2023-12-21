@@ -1,6 +1,10 @@
 import { UpdateProfileRequestSchema } from '@/model/request/ProfileRequest';
 import { ProfileResponse } from '@/model/response/ProfileRespose';
-import { calculateBMI, calculateCaloriesNeeds } from '@/service/MLService';
+import {
+  calculateBMI,
+  calculateBMR,
+  calculateCaloriesNeeds,
+} from '@/service/MLService';
 import { dateToString } from '@/util/Date';
 import ResponseError from '@/util/ResponseError';
 import { Gender } from '@prisma/client';
@@ -104,24 +108,25 @@ export async function getUserCalNeeds(
     where: {
       userId: req.user.uid,
     },
-    select: {
-      currentWeight: true,
-      height: true,
-      gender: true,
-    },
   });
 
-  if (!profile || !profile.currentWeight || !profile.height || profile.gender) {
+  if (
+    !profile ||
+    !profile.currentWeight ||
+    !profile.height ||
+    !profile.gender ||
+    !profile.birthDate
+  ) {
     throw new ResponseError(404, "user hasn't been initialized");
   }
 
-  const calNeeds = profile.gender
-    ? await calculateCaloriesNeeds(
-        profile.height,
-        profile.currentWeight,
-        profile.gender
-      )
-    : null;
+  const bmr = calculateBMR(
+    profile.currentWeight,
+    profile.height,
+    profile.birthDate,
+    profile.gender
+  );
+  const calNeeds = calculateCaloriesNeeds(bmr);
 
   res.json({
     status: 'success',

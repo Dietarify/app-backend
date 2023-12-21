@@ -65,25 +65,45 @@ export async function getFoodRecomendation(userid: string) {
   };
 }
 
-// TODO: use the correct calculation
-export async function calculateCaloriesNeeds(
-  height: number,
-  weight: number,
-  gender: Gender
-): Promise<number> {
-  if (gender == Gender.Female) {
-    return 2100;
-  }
-
-  return 2500;
+// Asumsi: Bergerak cukup aktif
+export function calculateCaloriesNeeds(bmr: number): number {
+  return bmr * 1.55;
 }
 
-export async function calculateBMI(
-  weight: number,
-  height: number
-): Promise<number> {
+export function calculateBMI(weight: number, height: number): number {
   const mHeight = height / 100;
   const result = weight / (mHeight * mHeight);
 
   return result;
+}
+
+export function calculateBMR(
+  weight: number,
+  height: number,
+  birthday: Date,
+  gender: Gender
+) {
+  const age = calculateAge(birthday);
+
+  if (gender == Gender.Female) {
+    return 655.42 + 9.65 * weight + 1.85 * height - 4.68 * age;
+  }
+
+  return 66.42 + 13.75 * weight + 5 * height - 6.7 * age;
+}
+
+function calculateAge(birthdate: Date): number {
+  const currentDate = new Date();
+  let age = currentDate.getFullYear() - birthdate.getFullYear();
+
+  // Check if the birthday has occurred this year
+  if (
+    currentDate.getMonth() < birthdate.getMonth() ||
+    (currentDate.getMonth() === birthdate.getMonth() &&
+      currentDate.getDate() < birthdate.getDate())
+  ) {
+    age--;
+  }
+
+  return age;
 }

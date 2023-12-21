@@ -1,7 +1,7 @@
 import { AddDietSchema } from '@/model/request/DietRequest';
 import { Pagination } from '@/model/request/generic';
 import prisma from '@/service/DBService';
-import { calculateCaloriesNeeds } from '@/service/MLService';
+import { calculateBMR, calculateCaloriesNeeds } from '@/service/MLService';
 import ResponseError from '@/util/ResponseError';
 import express from 'express';
 
@@ -47,14 +47,15 @@ export async function addDiet(req: express.Request, res: express.Response) {
 
     if (
       !userProfile ||
-      !userProfile.height ||
       !userProfile.currentWeight ||
-      !userProfile.gender
+      !userProfile.height ||
+      !userProfile.gender ||
+      !userProfile.birthDate
     ) {
-      throw new ResponseError(404, "user hasn't initialized yet");
+      throw new ResponseError(404, "user hasn't been initialized");
     }
 
-    const { height, currentWeight, gender } = userProfile;
+    const { height, currentWeight, gender, birthDate } = userProfile;
 
     const foodData = await tx.foods.findUnique({
       where: {
@@ -66,11 +67,8 @@ export async function addDiet(req: express.Request, res: express.Response) {
       throw new ResponseError(404, 'food is not found');
     }
 
-    const caloriesNeeds = await calculateCaloriesNeeds(
-      height,
-      currentWeight,
-      gender
-    );
+    const bmr = calculateBMR(currentWeight, height, birthDate, gender);
+    const caloriesNeeds = calculateCaloriesNeeds(bmr);
     const timestamp = new Date();
 
     const userLastCalories =
