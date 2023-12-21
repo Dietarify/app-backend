@@ -3,6 +3,7 @@ import logger from '@service/log';
 import { GoogleAuth } from 'google-auth-library';
 import prisma from './DBService';
 import { Gender } from '@prisma/client';
+import ResponseError from '@/util/ResponseError';
 
 const ML_API_URL = process.env.ML_API_URL ?? 'http://localhost:8000';
 const auth = new GoogleAuth();
@@ -42,8 +43,39 @@ export async function healthCheck() {
   }
 }
 
-export async function getFoodRecomendation(userid: string) {
-  const result = await mlService.post('/models/food-recomendation');
+export async function getFoodRecomendation(userId: string) {
+  const userInfo = await prisma.profile.findFirst({
+    where: { userId },
+  });
+
+  if (!userInfo) {
+    throw new ResponseError(404, 'user not found');
+  }
+
+  if (
+    !userInfo.gender ||
+    !userInfo.height ||
+    !userInfo.currentWeight ||
+    !userInfo.birthDate
+  ) {
+    throw new ResponseError(404, 'user is not initialized');
+  }
+
+  const bmr = calculateBMR(
+    userInfo.currentWeight,
+    userInfo.height,
+    userInfo.birthDate,
+    userInfo.gender
+  );
+  const caloriesNeed = calculateCaloriesNeeds(bmr);
+  const age = calculateAge(userInfo.birthDate);
+  const sex = userInfo.gender == Gender.Male ? 'Male' : 'Female';
+
+  const result = await mlService.post('/models/food-recomendation', {
+    caloriesNeed,
+    age,
+    sex,
+  });
   const recomendationId = result.data.data;
 
   const foodResult = await prisma.foods.findMany({
