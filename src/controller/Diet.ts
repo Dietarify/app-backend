@@ -20,6 +20,9 @@ export async function getDietHistory(
     },
     take: limit,
     skip: limit * (page - 1),
+    include: {
+      eatenFood: true,
+    },
   });
 
   res.json({
