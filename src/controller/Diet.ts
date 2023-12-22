@@ -23,6 +23,9 @@ export async function getDietHistory(
     include: {
       eatenFood: true,
     },
+    orderBy: {
+      timestamp: 'desc',
+    },
   });
 
   res.json({

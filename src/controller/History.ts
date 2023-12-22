@@ -18,6 +18,9 @@ export async function getWeightHistory(
     },
     take: limit,
     skip: limit * (page - 1),
+    orderBy: {
+      timestamp: 'desc',
+    },
   });
 
   res.json({
@@ -42,6 +45,9 @@ export async function getCaloriesHistory(
     },
     take: limit,
     skip: limit * (page - 1),
+    orderBy: {
+      timestamp: 'desc',
+    },
   });
 
   res.json({
